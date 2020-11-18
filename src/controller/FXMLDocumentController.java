@@ -172,6 +172,13 @@ public class FXMLDocumentController implements Initializable {
         update(course);
     }
     
+    //Quiz #4
+    
+    @FXML
+    void searchByName(ActionEvent event) {
+        System.out.println("clicked");
+    }
+    
     @FXML
     private void handleButtonAction(ActionEvent event) {
         System.out.println("You clicked me!");
