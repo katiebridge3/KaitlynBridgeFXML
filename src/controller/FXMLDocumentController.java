@@ -9,11 +9,20 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
@@ -47,7 +56,73 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private Button buttonReadBetweenCredits;
+    
+    @FXML
+    private TextField enterName;
+    
+     @FXML
+    private TableView<model.Coursemodel> courseTable;
+    @FXML
+    private TableColumn<model.Coursemodel, Integer> courseId;
+    @FXML
+    private TableColumn<model.Coursemodel, String> courseName;
+    @FXML
+    private TableColumn<model.Coursemodel, Integer> courseSection;
+    
+    @FXML
+    private TableColumn<model.Coursemodel, Integer> courseCredits;
 
+    
+    //Quiz #4
+    
+    
+     // code adapted from source
+    private ObservableList<model.Coursemodel> courseData;
+
+    // add the proper data to the observable list to be rendered in the table
+    public void setTableData(List<model.Coursemodel> courseList) {
+
+        // initialize the studentData variable
+        courseData = FXCollections.observableArrayList();
+
+        // add the student objects to an observable list object for use with the GUI table
+        courseList.forEach(c -> {
+            courseData.add(c);
+        });
+
+        // set the the table items to the data in studentData; refresh the table
+        courseTable.setItems(courseData);
+        courseTable.refresh();
+    }
+
+    
+    //code adapted from source
+    @FXML
+    void searchByName(ActionEvent event) {
+        System.out.println("clicked");
+        
+        //get name from text box
+        String name = enterName.getText();
+        
+        List<model.Coursemodel> courses = readByName(name);
+
+        if (courses == null || courses.isEmpty()) {
+
+            // show an alert to inform user 
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Information Dialog Box");
+            alert.setHeaderText("This is header section to write heading");
+            alert.setContentText("No course");
+            alert.showAndWait();
+        } else {
+
+            // setting table data
+            setTableData(courses);
+        }
+        
+    }
+    
+    
     @FXML
     //code modified from source code
     void createCourse(ActionEvent event) {
@@ -172,12 +247,6 @@ public class FXMLDocumentController implements Initializable {
         update(course);
     }
     
-    //Quiz #4
-    
-    @FXML
-    void searchByName(ActionEvent event) {
-        System.out.println("clicked");
-    }
     
     @FXML
     private void handleButtonAction(ActionEvent event) {
@@ -192,6 +261,21 @@ public class FXMLDocumentController implements Initializable {
         
         //code used from source
         manager = (EntityManager) Persistence.createEntityManagerFactory("KaitlynBridgeFXMLPU").createEntityManager();
+        
+        courseId.setCellValueFactory(new PropertyValueFactory<>("courseid"));
+
+        courseName.setCellValueFactory(new PropertyValueFactory<>("coursename"));
+        
+        
+        courseSection.setCellValueFactory(new PropertyValueFactory<>("coursesection"));
+
+        
+        courseCredits.setCellValueFactory(new PropertyValueFactory<>("credits"));
+
+        //eanble row selection
+        // (SelectionMode.MULTIPLE);
+        courseTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        
         
     } 
     
@@ -310,6 +394,22 @@ public class FXMLDocumentController implements Initializable {
         }
         
         return course;
+    }
+     
+     //used and modified from source code
+      public List<model.Coursemodel> readByName(String name) {
+        Query query = manager.createNamedQuery("Coursemodel.findByCoursename");
+
+        // setting query parameter
+        query.setParameter("coursename", name);
+
+        // execute query
+        List<model.Coursemodel> courses = query.getResultList();
+        for (model.Coursemodel c : courses) {
+                System.out.println(c.getCourseid() + " " + c.getCredits() + " " + c.getCoursesection());
+        }
+
+        return courses;
     }
      
      //code used and modified from source code
