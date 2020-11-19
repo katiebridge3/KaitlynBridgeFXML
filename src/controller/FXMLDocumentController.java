@@ -16,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -194,6 +195,53 @@ public class FXMLDocumentController implements Initializable {
         }
         
 
+    }
+    
+    //modified from source
+    
+    @FXML
+    void actionShowDetailsInPlace(ActionEvent event) throws IOException {
+        System.out.println("clicked");
+
+        
+                // pass currently selected model
+        model.Coursemodel selectedCourse = courseTable.getSelectionModel().getSelectedItem();
+
+        
+        // fxml loader
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/DetailedModelView.fxml"));
+
+        // load the ui elements
+        Parent detailedModelView = loader.load();
+
+        // load the scene
+        Scene tableViewScene = new Scene(detailedModelView);
+
+        //access the detailedControlled and call a method
+        DetailedModelViewController detailedControlled = loader.getController();
+
+        if(selectedCourse != null){
+
+        detailedControlled.initData(selectedCourse);
+
+        //pass current scene to return
+        Scene currentScene = ((Node) event.getSource()).getScene();
+        detailedControlled.setPreviousScene(currentScene);
+
+        //This line gets the Stage information
+        Stage stage = (Stage) currentScene.getWindow();
+
+        stage.setScene(tableViewScene);
+        stage.show();
+        }
+        else{
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Information Dialog Box");
+            alert.setHeaderText("This is header section to write heading");
+            alert.setContentText("Please select a course first");
+            alert.showAndWait();
+            
+        }
     }
     
     @FXML
