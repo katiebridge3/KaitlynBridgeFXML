@@ -29,8 +29,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Coursemodel.findByCoursesection", query = "SELECT c FROM Coursemodel c WHERE c.coursesection = :coursesection"),
     @NamedQuery(name = "Coursemodel.findByCredits", query = "SELECT c FROM Coursemodel c WHERE c.credits = :credits"),
     @NamedQuery(name = "Coursemodel.findByCourseidAndCoursename", query = "SELECT c FROM Coursemodel c WHERE c.courseid = :courseid and c.coursename = :coursename"),
+    @NamedQuery(name = "Coursemodel.findByNameAdvanced", query = "SELECT c FROM Coursemodel c WHERE  LOWER(c.coursename) LIKE  CONCAT('%', LOWER(:coursename), '%')"),
     @NamedQuery(name = "Coursemodel.findByCourseBetweenCredits", query = "SELECT c FROM Coursemodel c WHERE c.credits BETWEEN :startcredits AND :endcredits")})
-
+//findByNameAdvanced modified from source
 //findByCourseidAndCoursename modified from source
 public class Coursemodel implements Serializable {
 

@@ -122,6 +122,33 @@ public class FXMLDocumentController implements Initializable {
         
     }
     
+    //code modified from source
+    @FXML
+    void searchByNameAdvancedAction(ActionEvent event) {
+        System.out.println("clicked");
+
+        //getting the name from text box        
+        String name = enterName.getText();
+
+        //call a db read operaiton, readByName
+        List<model.Coursemodel> courses = readByNameAdvanced(name);
+
+        
+        //alert
+        if (courses == null || courses.isEmpty()) {
+
+            // show an alert to inform user 
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Information Dialog Box");
+            alert.setHeaderText("This is header section to write heading");
+            alert.setContentText("No course");
+            alert.showAndWait();
+        } else {
+            //set table data
+            setTableData(courses);
+        }
+        
+    }
     
     @FXML
     //code modified from source code
@@ -407,6 +434,22 @@ public class FXMLDocumentController implements Initializable {
         List<model.Coursemodel> courses = query.getResultList();
         for (model.Coursemodel c : courses) {
                 System.out.println(c.getCourseid() + " " + c.getCredits() + " " + c.getCoursesection());
+        }
+
+        return courses;
+    }
+      
+      //modified from source
+      public List<model.Coursemodel> readByNameAdvanced(String name) {
+        Query query = manager.createNamedQuery("Coursemodel.findByNameAdvanced");
+
+        // setting query parameter
+        query.setParameter("coursename", name);
+
+        // execute query
+        List<model.Coursemodel> courses = query.getResultList();
+        for (model.Coursemodel c : courses) {
+            System.out.println(c.getCourseid() + " " + c.getCredits() + " " + c.getCoursesection());
         }
 
         return courses;
